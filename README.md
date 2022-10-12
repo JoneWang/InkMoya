@@ -1,4 +1,4 @@
 # InkMoya
-imink's reuqests library. Moya like. Linux support. 
+imink's reuqests library. 
 
 **Many features not implemented. Only serves the imink project.*

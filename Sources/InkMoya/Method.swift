@@ -1,4 +1,4 @@
-public enum APIMethod: String {
+public enum Method: String {
     case post = "POST"
     case get = "GET"
 }

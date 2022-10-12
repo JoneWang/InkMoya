@@ -1,5 +1,5 @@
 import Foundation
 
-extension Encodable {
+public extension Encodable {
     func toJSONData() -> Data? { try? JSONEncoder().encode(self) }
 }

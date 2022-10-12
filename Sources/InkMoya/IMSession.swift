@@ -8,16 +8,16 @@ public protocol IMSessionType {
     func request(api targetType: TargetType) async throws -> (Data, URLResponse)
 }
 
-struct IMSession: IMSessionType {
-    static var shared: IMSession = IMSession(urlSession: URLSession.shared)
+public struct IMSession: IMSessionType {
+    public static var shared: IMSession = IMSession(urlSession: URLSession.shared)
 
     private let urlSession: URLSession
 
-    init(urlSession: URLSession) {
+    public init(urlSession: URLSession) {
         self.urlSession = urlSession
     }
 
-    func request(api targetType: TargetType) async throws -> (Data, URLResponse) {
+    public func request(api targetType: TargetType) async throws -> (Data, URLResponse) {
         let request = targetType.request
 
         logger.trace("---- Request ----")

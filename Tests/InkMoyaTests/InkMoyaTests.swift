@@ -5,7 +5,6 @@ struct MessageResult: Decodable {
     let message: String
 }
 
-@available(macOS 12, *)
 final class InkMoyaTests: XCTestCase {
     func testRequest() async throws {
         let session = IMSession.shared

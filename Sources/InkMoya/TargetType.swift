@@ -7,7 +7,7 @@ import Foundation
 public protocol TargetType {
     var baseURL: URL { get }
     var path: String { get }
-    var method: Method { get }
+    var method: RequestMethod { get }
     var headers: [String: String]? { get }
     var querys: [(String, String?)]? { get }
     var data: MediaType? { get }

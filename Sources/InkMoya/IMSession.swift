@@ -4,10 +4,12 @@ import Foundation
     import FoundationNetworking
 #endif
 
+@available(macOS 12, *)
 public protocol IMSessionType {
     func request(api targetType: TargetType) async throws -> (Data, URLResponse)
 }
 
+@available(macOS 12, *)
 public struct IMSession: IMSessionType {
     public static var shared: IMSession = IMSession(urlSession: URLSession.shared)
 

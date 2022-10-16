@@ -4,6 +4,7 @@ import Foundation
     import FoundationNetworking
 #endif
 
+@available(macOS 12, *)
 public class IMSessionMock: IMSessionType {
     public func request(api targetType: TargetType) async throws -> (Data, URLResponse) {
         let request = targetType.request

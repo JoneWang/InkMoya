@@ -6,6 +6,9 @@
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+    import FoundationNetworking
+#endif
 
 public protocol PluginType {
     func prepare(_ request: URLRequest, target: TargetType) -> URLRequest

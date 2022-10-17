@@ -5,9 +5,13 @@ import Foundation
 #endif
 
 public class IMSessionMock: IMSessionType {
-    public func request(api targetType: TargetType) async throws -> (Data, URLResponse) {
-        let request = targetType.request
+    public var plugins: [PluginType] = []
 
+    public func request(api targetType: TargetType) async throws -> (Data, URLResponse) {
+        var request = targetType.request
+
+        request = plugins.reduce(request) { $1.prepare($0, target: targetType) }
+        
         logger.trace("---- Request ----")
         logger.trace("Path: \(request.url?.absoluteString ?? "")")
         logger.trace("Headers: \(String(describing: request.allHTTPHeaderFields))")

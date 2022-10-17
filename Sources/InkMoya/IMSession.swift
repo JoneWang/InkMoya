@@ -12,13 +12,16 @@ public struct IMSession: IMSessionType {
     public static var shared: IMSession = IMSession(urlSession: URLSession.shared)
 
     private let urlSession: URLSession
+    public var plugins: [PluginType] = []
 
     public init(urlSession: URLSession) {
         self.urlSession = urlSession
     }
 
     public func request(api targetType: TargetType) async throws -> (Data, URLResponse) {
-        let request = targetType.request
+        var request = targetType.request
+        
+        request = plugins.reduce(request) { $1.prepare($0, target: targetType) }
 
         logger.trace("---- Request ----")
         logger.trace("Path: \(request.url?.absoluteString ?? "")")

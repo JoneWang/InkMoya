@@ -5,6 +5,7 @@ import Foundation
 #endif
 
 public protocol IMSessionType {
+    var plugins: [PluginType] { get set }
     func request(api targetType: TargetType) async throws -> (Data, URLResponse)
 }
 

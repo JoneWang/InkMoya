@@ -31,7 +31,7 @@ public struct IMSession: IMSessionType {
             logger.trace("Body: \(String(data: httpBody, encoding: .utf8)!)")
         }
 
-        let (data, res) = try await urlSession.data(for: request)
+        let (data, res) = try await urlSession.ink_data(for: request)
 
         logger.trace("---- Response ----")
         logger.trace("Json: \(String(data: data, encoding: .utf8) ?? "unkown") \n\n")

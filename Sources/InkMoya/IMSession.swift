@@ -21,9 +21,11 @@ public struct IMSession: IMSessionType {
 
     public func request(api targetType: TargetType) async throws -> (Data, URLResponse) {
         var request = targetType.request
-        
         request = plugins.reduce(request) { $1.prepare($0, target: targetType) }
+        return try await self.request(request)
+    }
 
+    public func request(_ request: URLRequest) async throws -> (Data, URLResponse) {
         logger.trace("---- Request ----")
         logger.trace("Path: \(request.url?.absoluteString ?? "")")
         logger.trace("Headers: \(String(describing: request.allHTTPHeaderFields))")

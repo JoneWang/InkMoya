@@ -26,9 +26,15 @@ public class IMSessionMock: IMSessionType {
         logger.trace("---- Request ----")
         logger.trace("Path: \(request.url?.absoluteString ?? "")")
         logger.trace("Headers: \(String(describing: request.allHTTPHeaderFields))")
-        let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)
-        logger.trace("---- Response ----")
+        if let httpBody = request.httpBody {
+            logger.trace("Body: \(String(data: httpBody, encoding: .utf8)!)")
+        }
 
-        return ("".data(using: .utf8)!, response!)
+        let (data, res) = try await URLSession.shared.ink_data(for: request)
+
+        logger.trace("---- Response ----")
+        logger.trace("Json: \(String(data: data, encoding: .utf8) ?? "unkown") \n\n")
+
+        return (data, res)
     }
 }

@@ -21,4 +21,14 @@ public class IMSessionMock: IMSessionType {
 
         return (targetType.sampleData, response!)
     }
+
+    public func request(_ request: URLRequest) async throws -> (Data, URLResponse) {
+        logger.trace("---- Request ----")
+        logger.trace("Path: \(request.url?.absoluteString ?? "")")
+        logger.trace("Headers: \(String(describing: request.allHTTPHeaderFields))")
+        let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        logger.trace("---- Response ----")
+
+        return ("".data(using: .utf8)!, response!)
+    }
 }

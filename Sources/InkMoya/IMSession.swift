@@ -7,6 +7,7 @@ import Foundation
 public protocol IMSessionType {
     var plugins: [PluginType] { get set }
     func request(api targetType: TargetType) async throws -> (Data, URLResponse)
+    func request(_ request: URLRequest) async throws -> (Data, URLResponse)
 }
 
 public struct IMSession: IMSessionType {

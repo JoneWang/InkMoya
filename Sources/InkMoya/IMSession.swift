@@ -31,13 +31,21 @@ public struct IMSession: IMSessionType {
         logger.trace("Path: \(request.url?.absoluteString ?? "")")
         logger.trace("Headers: \(String(describing: request.allHTTPHeaderFields))")
         if let httpBody = request.httpBody {
-            logger.trace("Body: \(String(data: httpBody, encoding: .utf8)!)")
+            if httpBody.count < 1000, let str = String(data: httpBody, encoding: .utf8) {
+                logger.trace("Body: \(str)")
+            } else {
+                logger.trace("\(httpBody.count) byte \n\n")
+            }
         }
 
         let (data, res) = try await urlSession.ink_data(for: request)
 
         logger.trace("---- Response ----")
-        logger.trace("Json: \(String(data: data, encoding: .utf8) ?? "unkown") \n\n")
+        if data.count < 1000, let str = String(data: data, encoding: .utf8) {
+            logger.trace("Json: \(str) \n\n")
+        } else {
+            logger.trace("\(data.count) byte \n\n")
+        }
 
         return (data, res)
     }

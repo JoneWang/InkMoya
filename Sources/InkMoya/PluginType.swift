@@ -1,10 +1,3 @@
-//
-//  PluginType.swift
-//  InkMoya
-//
-//  Created by Jone Wang on 2022/10/17.
-//
-
 import Foundation
 #if canImport(FoundationNetworking)
     import FoundationNetworking
@@ -12,6 +5,12 @@ import Foundation
 
 public protocol PluginType {
     func prepare(_ request: URLRequest, target: TargetType) -> URLRequest
-    
-    // TODO:
+    func willSend(_ request: URLRequest, target: TargetType)
+    func didReceive(_ result: Result<(Data, HTTPURLResponse), Error>, target: TargetType)
+}
+
+public extension PluginType {
+    func prepare(_ request: URLRequest, target: TargetType) -> URLRequest { request }
+    func willSend(_ request: URLRequest, target: TargetType) {}
+    func didReceive(_ result: Result<(Data, HTTPURLResponse), Error>, target: TargetType) {}
 }

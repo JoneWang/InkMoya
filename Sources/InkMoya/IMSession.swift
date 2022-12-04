@@ -6,8 +6,7 @@ import Foundation
 
 public protocol IMSessionType {
     var plugins: [PluginType] { get set }
-    func request(api targetType: TargetType) async throws -> (Data, URLResponse)
-    func request(_ request: URLRequest) async throws -> (Data, URLResponse)
+    func request(api targetType: TargetType) async throws -> (Data, HTTPURLResponse)
 }
 
 public struct IMSession: IMSessionType {
@@ -20,33 +19,23 @@ public struct IMSession: IMSessionType {
         self.urlSession = urlSession
     }
 
-    public func request(api targetType: TargetType) async throws -> (Data, URLResponse) {
-        var request = targetType.request
-        request = plugins.reduce(request) { $1.prepare($0, target: targetType) }
-        return try await self.request(request)
-    }
-
-    public func request(_ request: URLRequest) async throws -> (Data, URLResponse) {
-        logger.trace("---- Request ----")
-        logger.trace("Path: \(request.url?.absoluteString ?? "")")
-        logger.trace("Headers: \(String(describing: request.allHTTPHeaderFields))")
-        if let httpBody = request.httpBody {
-            if httpBody.count < 1000, let str = String(data: httpBody, encoding: .utf8) {
-                logger.trace("Body: \(str)")
-            } else {
-                logger.trace("\(httpBody.count) byte \n\n")
+    public func request(api target: TargetType) async throws -> (Data, HTTPURLResponse) {
+        let request = plugins.reduce(target.request) { $1.prepare($0, target: target) }
+        plugins.forEach { $0.willSend(request, target: target) }
+        do {
+            let (data, resp) = try await urlSession.ink_data(for: request)
+            guard let httpResp = resp as? HTTPURLResponse else {
+                throw IMSessionError.responseNotHTTP
             }
+            plugins.forEach { $0.didReceive(.success((data, httpResp)), target: target) }
+            return (data, httpResp)
+        } catch let error {
+            plugins.forEach { $0.didReceive(.failure(error), target: target) }
+            throw error
         }
-
-        let (data, res) = try await urlSession.ink_data(for: request)
-
-        logger.trace("---- Response ----")
-        if data.count < 1000, let str = String(data: data, encoding: .utf8) {
-            logger.trace("Json: \(str) \n\n")
-        } else {
-            logger.trace("\(data.count) byte \n\n")
-        }
-
-        return (data, res)
     }
+}
+
+enum IMSessionError: Error {
+    case responseNotHTTP
 }

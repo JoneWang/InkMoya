@@ -42,7 +42,7 @@ extension TargetType {
             case .jsonData(let data):
                 request.addValue(
                     "application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-                request.httpBody = data.toJSONData()
+                request.httpBody = try? JSONEncoder().encode(data)
             case .form(let form):
                 request.addValue(
                     "application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")

@@ -17,8 +17,6 @@ public extension URLSession {
         let canceller = { task?.cancel() }
         
         return try await withTaskCancellationHandler {
-            canceller()
-        } operation: {
             try await withCheckedThrowingContinuation { continuation in
                 task = self.dataTask(with: request) { data, response, error in
                     guard let data = data, let response = response else {
@@ -28,6 +26,8 @@ public extension URLSession {
                 }
                 task?.resume()
             }
+        } onCancel: {
+            canceller()
         }
     }
 }

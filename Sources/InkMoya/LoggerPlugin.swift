@@ -1,6 +1,10 @@
 import Foundation
 import Logging
 
+#if canImport(FoundationNetworking)
+    import FoundationNetworking
+#endif
+
 public class LoggerPlugin: PluginType {
     
     public let logger: Logger

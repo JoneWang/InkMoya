@@ -4,9 +4,15 @@ import Foundation
     import FoundationNetworking
 #endif
 
-public extension URLSession {
+extension URLSession {
     
-    func ink_data(for request: URLRequest) async throws -> (Data, URLResponse) {
+    // TODO: remove this
+    @available(*, deprecated, message: "use IMSession.data(for:) instead")
+    public func ink_data(for request: URLRequest) async throws -> (Data, URLResponse) {
+        try await _ink_data(for: request)
+    }
+    
+    func _ink_data(for request: URLRequest) async throws -> (Data, URLResponse) {
         #if canImport(Darwin)
         if #available(macOS 12.0, iOS 15.0, tvOS 13.0, watchOS 8.0, *) {
             return try await self.data(for: request)

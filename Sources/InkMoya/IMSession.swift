@@ -23,7 +23,7 @@ public struct IMSession: IMSessionType {
         let request = plugins.reduce(target.request) { $1.prepare($0, target: target) }
         plugins.forEach { $0.willSend(request, target: target) }
         do {
-            let (data, resp) = try await urlSession.ink_data(for: request)
+            let (data, resp) = try await urlSession._ink_data(for: request)
             guard let httpResp = resp as? HTTPURLResponse else {
                 throw IMSessionError.responseNotHTTP
             }
@@ -33,6 +33,13 @@ public struct IMSession: IMSessionType {
             plugins.forEach { $0.didReceive(.failure(error), target: target) }
             throw error
         }
+    }
+}
+
+extension IMSession {
+    
+    public func data(for request: URLRequest) async throws -> (Data, URLResponse) {
+        return try await urlSession._ink_data(for: request)
     }
 }
 
